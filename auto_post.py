@@ -4,12 +4,9 @@ import time
 def get_proposal():
     return """
 
-C’est l’été, les journées ont ton visage, les pierres ta tiédeur
-Et la vie avec toi, l’hiver brûlera, il fera chaud en novembre, tu es ma chaleur, l’été perpétuel, mon amour inépuisable.
-Je t'aime d'une façon déraisonnable,
-et c'est la seule qui vaille.
+
 je veux coucher avec toi
-Je déteste la distance l'ombre la douleur la pluie Je veux des jours ensoleillés avec toi près de la mer et du sable Je veux encierre le fantastique le pays que j'aime mais avec toi
+
 🥺
 
 
@@ -43,7 +40,7 @@ def send_one():
         
         time.sleep(1)
 
-# 连续发送 10 次，每次间隔 5 秒
+# 连续发送 10 次，每次间隔 1 秒
 for i in range(1, 11):
     print(f"\n=== 第 {i} 次轰炸 ===")
     send_one()
