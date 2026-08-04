@@ -8,25 +8,28 @@ on:
 jobs:
   post:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: 检出代码
-      uses: actions/checkout@v4
-    
-    - name: 设置 Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-    
-    - name: 安装依赖
-      run: |
-        pip install requests
-        pip install requests-toolbelt
-    
-    - name: 执行发帖
-      run: |
-        python auto_post.py
-    
-    - name: 显示执行时间
-      run: |
-        echo "执行时间: $(date)"
+      - uses: actions/checkout@v4
+      
+      - name: 读取文件并发送
+        run: |
+          # 读取 message.txt 的内容
+          MESSAGE=$(cat message.txt)
+          
+          # 用 curl 发送，自动处理大文件
+          for i in 1 2 3; do
+            echo "第 $i 次发送"
+            curl -X POST https://scribbledthought.com/myDb.php \
+              -H "User-Agent: Mozilla/5.0" \
+              -H "Origin: https://scribbledthought.com" \
+              -H "Referer: https://scribbledthought.com/" \
+              -F "action=add_message" \
+              -F "message=$MESSAGE" \
+              -F "content=$MESSAGE" \
+              -F "color=#FFFF88" \
+              -F "recipient=ai" \
+              -F "to=ai" \
+              --max-time 300
+            echo ""
+            sleep 3
+          done
