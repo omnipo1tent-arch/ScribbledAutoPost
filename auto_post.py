@@ -5,9 +5,9 @@ def get_proposal():
     return """
 
 
-je veux coucher avec toi
-
-🥺
+Be my boyfriend🥺😍😘
+Today
+-🐧
 
 
     """
