@@ -11,25 +11,37 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: 读取文件并发送
+      - name: 分段发送大文件
         run: |
-          # 读取 message.txt 的内容
-          MESSAGE=$(cat message.txt)
+          # 每段 3000 字符
+          CHUNK_SIZE=3000
+          TOTAL=$(wc -c < message.txt)
+          CHUNKS=$(( (TOTAL + CHUNK_SIZE - 1) / CHUNK_SIZE ))
           
-          # 用 curl 发送，自动处理大文件
-          for i in 1 2 3; do
-            echo "第 $i 次发送"
+          echo "文件大小: $TOTAL 字节，分成 $CHUNKS 段"
+          
+          for ((i=0; i<CHUNKS; i++)); do
+            # 提取当前段
+            START=$((i * CHUNK_SIZE))
+            dd if=message.txt bs=1 skip=$START count=$CHUNK_SIZE 2>/dev/null > /tmp/chunk.txt
+            
+            echo "发送第 $((i+1))/$CHUNKS 段"
+            
+            # 让 curl 从文件读取内容
             curl -X POST https://scribbledthought.com/myDb.php \
               -H "User-Agent: Mozilla/5.0" \
               -H "Origin: https://scribbledthought.com" \
               -H "Referer: https://scribbledthought.com/" \
               -F "action=add_message" \
-              -F "message=$MESSAGE" \
-              -F "content=$MESSAGE" \
+              -F "message=< /tmp/chunk.txt" \
+              -F "content=< /tmp/chunk.txt" \
               -F "color=#FFFF88" \
               -F "recipient=ai" \
               -F "to=ai" \
-              --max-time 300
+              --max-time 30
+            
             echo ""
-            sleep 3
+            sleep 2
           done
+          
+          echo "完成！共发送 $CHUNKS 段"
