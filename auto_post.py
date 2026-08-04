@@ -7,7 +7,7 @@ def post_message():
     
     url = "https://scribbledthought.com/myDb.php"
     
-    # 直接在这里写你要发送的内容（不用读取文件）
+    # 直接在这里写你要发送的内容
     content = "Hello! This is an automated message from GitHub Actions."
     
     files = {
@@ -35,6 +35,34 @@ def post_message():
         if response.status_code == 200:
             print(f"✅ 发送成功: {content}")
             return True
+        else:
+            print(f"❌ 发送失败")
+            return False
+    except Exception as e:
+        print(f"❌ 错误: {e}")
+        return False
+
+def post_three_times():
+    """发送3次"""
+    for i in range(3):
+        print(f"\n第 {i+1} 次发送")
+        success = post_message()
+        
+        if success:
+            print(f"✅ 第 {i+1} 次发送成功")
+        else:
+            print(f"❌ 第 {i+1} 次发送失败")
+        
+        if i < 2:
+            print("等待3秒...")
+            time.sleep(3)
+    
+    print("\n✅ 完成3次发送！")
+
+if __name__ == "__main__":
+    print("🚀 开始自动发帖...")
+    post_three_times()
+    print("🎉 程序执行完毕！")            return True
         else:
             print(f"❌ 发送失败")
             return False
