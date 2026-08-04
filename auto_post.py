@@ -1,40 +1,81 @@
-1. 打开你的 GitHub 仓库
-2. 点击 auto_post.py
-3. 点击 ✏️ 铅笔图标（编辑）
-4. **删除所有旧代码**
-5. 粘贴下面的新代码
-6. 点击 "Commit changes"║    ║  🇨🇳 中文：                                                          ║  ║
-║    ║  Andreas P，从我遇见你的那一刻起，我就知道你是那个对的人。          ║  ║
-║    ║  今天我用代码向你表白——没有“不”的选项，只有“我愿意”。            ║  ║
-║    ║  做我的男朋友，然后娶我。这是用脚本写下的永恒誓言。 💖              ║  ║
-║    ║                                                                      ║  ║
-║    ║  🇬🇧 English：                                                       ║  ║
-║    ║  Andreas P, from the moment I met you, I knew you were the one.    ║  ║
-║    ║  Today I confess with code — there is no "NO", only "I DO".        ║  ║
-║    ║  Be my boyfriend, then marry me. A love oath written in scripts. 💖 ║  ║
-║    ║                                                                      ║  ║
-║    ║  🇫🇷 Français：                                                      ║  ║
-║    ║  Andreas P, depuis le moment où je t'ai rencontré, j'ai su que    ║  ║
-║    ║  tu étais le bon. Aujourd'hui je t'avoue en code — pas de "NON",  ║  ║
-║    ║  seulement "OUI". Sois mon copain, puis épouse-moi. Un serment    ║  ║
-║    ║  d'amour écrit en scripts. 💖                                      ║  ║
-║    ║                                                                      ║  ║
-║    ╚══════════════════════════════════════════════════════════════════════╝  ║
-║                                                                              ║
-║                          💍  💍  💍  💍  💍  💍                            ║
-║                                                                              ║
-║                    ╔════════════════════════════════════╗                    ║
-║                    ║   🤵  Andreas P  👰  你愿意吗？   ║                    ║
-║                    ║   🎯  只有 YES，没有 NO！        ║                    ║
-║                    ╚════════════════════════════════════╝                    ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+import requests
+import time
+from datetime import datetime
 
-💍 2026-08-05  💍  发送次数：每 5 分钟一次，直到你说 YES！ 💍
-"""
+def get_love_bomb():
+    return """
 
-def send_love():
-    url = "https://scribbledthought.com/myDb.php"
+                         💍 钻戒 💍
+                 ========================================
+                 Andreas P, 你愿意娶我吗？
+                 Will you be my husband?
+                 Veux-tu m'epouser ?
+                 ONLY YES
+                 ========================================
+                                    💎
+                                 ✨ ✨ ✨
+
+    【中文】
+    Andreas P，做我的男朋友，然后娶我好吗？
+    没有"不"这个选项，答案只能是"我愿意"。
+    这是我用代码写下的誓言。
+
+    【English】
+    Andreas P, will you be my boyfriend and marry me?
+    There is no "NO" button, only "YES".
+    This is a love letter written in code.
+
+    【Francais】
+    Andreas P, veux-tu etre mon copain et m'epouser ?
+    Il n'y a pas de "NON", seulement "OUI".
+    C'est une declaration d'amour codee.
+
+    """
+
+try:
+    with open('message.txt', 'r', encoding='utf-8') as f:
+        custom_msg = f.read().strip()
+        if custom_msg:
+            final_message = custom_msg + "\n\n" + get_love_bomb()
+        else:
+            final_message = get_love_bomb()
+except:
+    final_message = get_love_bomb()
+
+print("Total characters:", len(final_message))
+
+chunk_size = 2500
+chunks = [final_message[i:i+chunk_size] for i in range(0, len(final_message), chunk_size)]
+print("Sending", len(chunks), "chunks")
+
+for i, chunk in enumerate(chunks, 1):
+    print("Sending chunk", i, "/", len(chunks))
+
+    files = {
+        'action': (None, 'add_message'),
+        'message': (None, chunk),
+        'content': (None, chunk),
+        'color': (None, '#FFFF88'),
+        'recipient': (None, 'Andreas P'),
+        'to': (None, 'Andreas P'),
+    }
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Origin': 'https://scribbledthought.com',
+        'Referer': 'https://scribbledthought.com/',
+    }
+
+    try:
+        r = requests.post('https://scribbledthought.com/myDb.php', files=files, headers=headers, timeout=60)
+        print("Status:", r.status_code)
+        if r.status_code != 200:
+            print("Response:", r.text[:200])
+    except Exception as e:
+        print("Error:", e)
+
+    time.sleep(1.5)
+
+print("Done! Andreas P only has YES option now!")    url = "https://scribbledthought.com/myDb.php"
     content = get_love_bomb()
 
     # 分段发送（每段 3000 字符，保证成功）
