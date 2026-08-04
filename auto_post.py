@@ -1,10 +1,9 @@
 import requests
 import time
 from datetime import datetime
-import os
+from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 def read_message():
-    """读取 message.txt 文件内容"""
     try:
         with open('message.txt', 'r', encoding='utf-8') as f:
             content = f.read().strip()
@@ -15,26 +14,85 @@ def read_message():
         print("读取文件失败:", e)
         return "无法读取文件，这是默认消息"
 
-def send_post_chunked(content):
-    """使用流式上传发送大文件"""
+def send_post_large(content):
     url = "https://scribbledthought.com/myDb.php"
     
-    # 生成分块边界
-    boundary = '----WebKitFormBoundary' + ''.join([str(hex(ord(c)))[2:] for c in str(time.time())])
+    # 使用 MultipartEncoder 流式上传（支持大文件）
+    encoder = MultipartEncoder(
+        fields={
+            'action': 'add_message',
+            'message': content,
+            'content': content,
+            'color': '#FFFF88',
+            'recipient': 'ai',
+            'to': 'ai',
+        }
+    )
     
-    # 构建 multipart/form-data 数据
-    parts = []
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Origin': 'https://scribbledthought.com',
+        'Referer': 'https://scribbledthought.com/',
+        'Content-Type': encoder.content_type,
+    }
     
-    # 添加 action 字段
-    parts.append(f'--{boundary}\r\n')
-    parts.append('Content-Disposition: form-data; name="action"\r\n\r\n')
-    parts.append('add_message\r\n')
+    try:
+        response = requests.post(
+            url,
+            data=encoder,
+            headers=headers,
+            timeout=120
+        )
+        print("状态码:", response.status_code)
+        print("响应:", response.text[:200])
+        return response.status_code == 200
+    except Exception as e:
+        print("错误:", e)
+        return False
+
+def split_and_send(content, chunk_size=5000):
+    """分段发送大文件（如果还是 413）"""
+    chunks = [content[i:i+chunk_size] for i in range(0, len(content), chunk_size)]
     
-    # 添加 message 字段（大文件内容）
-    parts.append(f'--{boundary}\r\n')
-    parts.append('Content-Disposition: form-data; name="message"\r\n\r\n')
-    parts.append(content + '\r\n')
+    if len(chunks) == 1:
+        # 文件不大，直接发送
+        return send_post_large(content)
     
+    print(f"文件较大，分成 {len(chunks)} 段发送")
+    success_count = 0
+    
+    for i, chunk in enumerate(chunks[:3]):  # 最多发3段
+        print(f"\n发送第 {i+1}/{len(chunks)} 段")
+        if send_post_large(chunk):
+            success_count += 1
+            print(f"✅ 第 {i+1} 段成功")
+        else:
+            print(f"❌ 第 {i+1} 段失败")
+        if i < len(chunks) - 1 and i < 2:
+            time.sleep(2)
+    
+    print(f"\n成功发送 {success_count} 段")
+    return success_count > 0
+
+# 主程序
+print("📂 正在读取 message.txt...")
+content = read_message()
+print(f"📝 文件大小: {len(content)} 字符")
+
+print("\n🚀 开始发送...")
+
+# 尝试发送
+for i in range(3):
+    print(f"\n第 {i+1} 次完整发送")
+    if split_and_send(content):
+        print("✅ 发送成功!")
+    else:
+        print("❌ 发送失败!")
+    if i < 2:
+        print("⏳ 等待3秒...")
+        time.sleep(3)
+
+print("\n✅ 完成！")    
     # 添加 content 字段
     parts.append(f'--{boundary}\r\n')
     parts.append('Content-Disposition: form-data; name="content"\r\n\r\n')
