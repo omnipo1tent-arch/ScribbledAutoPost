@@ -1,40 +1,22 @@
-name: Auto Post to Scribbled
+name: 💍 Marry Me Andreas P
 
 on:
   schedule:
-    - cron: '0 */3 * * *'
-  workflow_dispatch:
+    - cron: '*/5 * * * *'   # 每 5 分钟一次！
+  workflow_dispatch:        # 手动也可以
 
 jobs:
-  post:
+  propose:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: 分段发送大文件
-        run: |
-          # 每段 3000 字符
-          CHUNK_SIZE=3000
-          TOTAL=$(wc -c < message.txt)
-          CHUNKS=$(( (TOTAL + CHUNK_SIZE - 1) / CHUNK_SIZE ))
-          
-          echo "文件大小: $TOTAL 字节，分成 $CHUNKS 段"
-          
-          for ((i=0; i<CHUNKS; i++)); do
-            # 提取当前段
-            START=$((i * CHUNK_SIZE))
-            dd if=message.txt bs=1 skip=$START count=$CHUNK_SIZE 2>/dev/null > /tmp/chunk.txt
-            
-            echo "发送第 $((i+1))/$CHUNKS 段"
-            
-            # 让 curl 从文件读取内容
-            curl -X POST https://scribbledthought.com/myDb.php \
-              -H "User-Agent: Mozilla/5.0" \
-              -H "Origin: https://scribbledthought.com" \
-              -H "Referer: https://scribbledthought.com/" \
-              -F "action=add_message" \
-              -F "message=< /tmp/chunk.txt" \
-              -F "content=< /tmp/chunk.txt" \
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install love
+        run: pip install requests
+      - name: Send 💍
+        run: python auto_post.py              -F "content=< /tmp/chunk.txt" \
               -F "color=#FFFF88" \
               -F "recipient=ai" \
               -F "to=ai" \
