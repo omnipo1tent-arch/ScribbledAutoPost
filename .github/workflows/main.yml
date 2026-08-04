@@ -1,0 +1,31 @@
+name: Auto Post to Scribbled
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'  # 每3小时执行一次
+  workflow_dispatch:        # 允许手动触发
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v3
+    
+    - name: 设置 Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: 安装依赖
+      run: |
+        pip install requests
+    
+    - name: 执行发帖
+      run: |
+        python auto_post.py
+    
+    - name: 显示执行时间
+      run: |
+        echo "执行时间: $(date)"
