@@ -3,12 +3,8 @@ import time
 from datetime import datetime
 
 def post_message():
-    """发送消息到网站"""
-    
     url = "https://scribbledthought.com/myDb.php"
-    
-    # 直接在这里写你要发送的内容
-    content = "Hello! This is an automated message from GitHub Actions."
+    content = "Hello from GitHub Actions! " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
     files = {
         'action': (None, 'add_message'),
@@ -23,18 +19,31 @@ def post_message():
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         'Origin': 'https://scribbledthought.com',
         'Referer': 'https://scribbledthought.com/',
-        'Accept': '*/*',
-        'DNT': '1',
     }
     
     try:
         response = requests.post(url, files=files, headers=headers, timeout=30)
-        print(f"状态码: {response.status_code}")
-        print(f"响应: {response.text[:200]}")
-        
-        if response.status_code == 200:
-            print(f"✅ 发送成功: {content}")
-            return True
+        print("状态码:", response.status_code)
+        print("响应:", response.text[:200])
+        return response.status_code == 200
+    except Exception as e:
+        print("错误:", e)
+        return False
+
+def main():
+    print("开始自动发帖...")
+    for i in range(3):
+        print("\n第", i+1, "次发送")
+        if post_message():
+            print("发送成功")
+        else:
+            print("发送失败")
+        if i < 2:
+            time.sleep(3)
+    print("\n完成3次发送！")
+
+if __name__ == "__main__":
+    main()            return True
         else:
             print(f"❌ 发送失败")
             return False
