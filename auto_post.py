@@ -4,11 +4,9 @@ import time
 def get_proposal():
     return """
 
+💔😭
 
-Be my boyfriend🥺😍😘
-Today
--🐧
-
+I just want to be loved..
 
     """
 
