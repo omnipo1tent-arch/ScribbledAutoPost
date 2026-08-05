@@ -38,7 +38,7 @@ def send_one():
         
         time.sleep(1)
 
-# 连续发送 10 次，每次间隔 1 秒
+# 连续发送 100 次，每次间隔 0.1 秒
 for i in range(1, 11):
     print(f"\n=== 第 {i} 次轰炸 ===")
     send_one()
