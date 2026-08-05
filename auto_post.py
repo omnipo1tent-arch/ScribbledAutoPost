@@ -7,6 +7,7 @@ def get_proposal():
 How dare u to ignore me
 😤
 https://www.instagram.com/bourbaki91/
+骗子不就承认他骗我的吗，说爱我还不选择我玩弄他人感情
 
 
     """
