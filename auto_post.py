@@ -4,9 +4,10 @@ import time
 def get_proposal():
     return """
 
-💔😭
+How dare u to ignore me
+😤
+https://www.instagram.com/bourbaki91/
 
-I just want to be loved..
 
     """
 
