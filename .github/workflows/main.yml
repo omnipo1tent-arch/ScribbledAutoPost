@@ -1,65 +1,23 @@
-name: Revenge Auto Post
+name: Website Test
 
 on:
   schedule:
-    - cron: '0 */3 * * *'
-  workflow_dispatch:
+    - cron: '0 * * * *'   # 每小时整点
+  workflow_dispatch:      # 允许手动运行
 
 jobs:
-  post:
+  test:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
-      - name: Install
+          python-version: "3.12"
+
+      - name: Install requests
         run: pip install requests
-      - name: Send all hearts
-        run: |
-          python << 'EOF'
-import requests, time, sys
 
-# 读取全部 19 万颗💔
-with open('message.txt', 'r', encoding='utf-8') as f:
-    full_text = f.read()
-
-print(f"💔 总字符数: {len(full_text)}")
-
-# 分段（每段 3000 字符，保证服务器不 413）
-chunk_size = 3000
-chunks = [full_text[i:i+chunk_size] for i in range(0, len(full_text), chunk_size)]
-total = len(chunks)
-
-print(f"📦 分成 {total} 段发送")
-
-for i, chunk in enumerate(chunks, 1):
-    print(f"\n📤 发送第 {i}/{total} 段，{len(chunk)} 个💔")
-    
-    files = {
-        'action': (None, 'add_message'),
-        'message': (None, chunk),
-        'content': (None, chunk),
-        'color': (None, '#FFFF88'),
-        'recipient': (None, 'ai'),
-        'to': (None, 'ai'),
-    }
-    headers = {
-        'User-Agent': 'Mozilla/5.0',
-        'Origin': 'https://scribbledthought.com',
-        'Referer': 'https://scribbledthought.com/',
-    }
-    
-    try:
-        r = requests.post('https://scribbledthought.com/myDb.php', files=files, headers=headers, timeout=60)
-        print(f"   ↳ 状态码: {r.status_code} {'✅' if r.status_code == 200 else '❌'}")
-    except Exception as e:
-        print(f"   ↳ 错误: {e}")
-        sys.exit(1)
-    
-    # 温柔一点，别把服务器打崩（他学网络安全，给他留点面子）
-    time.sleep(1.5)
-
-print(f"\n🎯 完成！共发送 {total} 段，总计 {len(full_text)} 个💔")
-print("💔 你让我心碎，我让服务器流泪 💔")
-EOF
+      - name: Run script
+        run: python auto_post.py
