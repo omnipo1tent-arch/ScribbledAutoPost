@@ -2,8 +2,9 @@ name: Website Test
 
 on:
   schedule:
-    - cron: '27 * * * *'  # 每小时的第27分钟运行
-  workflow_dispatch:      # 允许手动运行
+    - cron: '*/5 * * * *'  # 每5分钟运行一次，方便测试
+  workflow_dispatch:
+    # 允许手动运行
 
 jobs:
   test:
