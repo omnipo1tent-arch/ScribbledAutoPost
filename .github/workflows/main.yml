@@ -2,7 +2,7 @@ name: Website Test
 
 on:
   schedule:
-    - cron: '0 * * * *'   # 每小时整点
+    - cron: '15 * * * *'   # 每小时整点
   workflow_dispatch:      # 允许手动运行
 
 jobs:
