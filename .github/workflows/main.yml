@@ -2,7 +2,7 @@ name: Website Test
 
 on:
   schedule:
-    - cron: '27 * * * *'  
+    - cron: '27 * * * *'  # 每小时的第27分钟运行
   workflow_dispatch:      # 允许手动运行
 
 jobs:
@@ -20,4 +20,4 @@ jobs:
         run: pip install requests
 
       - name: Run script
-        run: python auto_post.py
+        run: python auto_post  # 确保文件名正确
