@@ -15,7 +15,7 @@ def send_one():
 
     files = {
         "color": (None, "#FFFF88"),
-        "recipient": (None, "test"),
+        "recipient": (None, "s"),
         "message": (None, final_message),
         "to": (None, "test"),
     }
@@ -45,7 +45,7 @@ def send_one():
 if __name__ == "__main__":
 
     for i in range(20):
-        print(f"Sending {i+1}/20")
+        print(f"Sending {i+1}/100")
 
         send_one()
 
