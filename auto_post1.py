@@ -6,7 +6,7 @@ URL = "https://scribbledthought.com/myDb.php"
 
 
 def get_message():
-    return Path("message.txt").read_text(encoding="utf-8")
+    return Path("message1.txt").read_text(encoding="utf-8")
 
 
 def send_one():
