@@ -17,7 +17,7 @@ def send_one():
         "color": (None, "#FFFF88"),
         "recipient": (None, "s"),
         "message": (None, final_message),
-        "to": (None, "test"),
+        "to": (None, "andreas pauper"),
     }
 
     headers = {
